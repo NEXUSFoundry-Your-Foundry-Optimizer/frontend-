@@ -5,9 +5,9 @@ import type { Group, Mesh } from "three";
 
 export type SceneVariant = "furnace" | "mold" | "ladle" | "inspection";
 
-const SIGNAL = "#37f0b8";
-const HOT = "#ff7a3d";
-const STEEL = "#1d3b36";
+const SIGNAL = "#ff6a00";
+const HOT = "#ff5500";
+const STEEL = "#222222";
 
 function Furnace({ heat = 1 }: { heat?: number }) {
   const glow = useRef<Mesh>(null);
@@ -134,10 +134,10 @@ export default function Scene({
 }) {
   return (
     <Canvas camera={{ position: [3.6, 2.4, 4.4], fov: 42 }} dpr={[1, 1.8]}>
-      <color attach="background" args={["#0a1a17"]} />
-      <fog attach="fog" args={["#0a1a17", 8, 18]} />
+      <color attach="background" args={["#F4E9CD"]} />
+      <fog attach="fog" args={["#F4E9CD", 8, 18]} />
       <ambientLight intensity={0.5} />
-      <directionalLight position={[5, 6, 4]} intensity={1.1} color="#bffbe8" />
+      <directionalLight position={[5, 6, 4]} intensity={1.1} color="#ffffff" />
       <directionalLight position={[-5, 2, -4]} intensity={0.5} color={SIGNAL} />
       <Float speed={1.4} rotationIntensity={0.25} floatIntensity={0.5}>
         {variant === "furnace" && <Furnace />}
@@ -145,7 +145,7 @@ export default function Scene({
         {variant === "ladle" && <Ladle />}
         {variant === "inspection" && <Inspection />}
       </Float>
-      <gridHelper args={[16, 16, "#1f4740", "#15332e"]} position={[0, -1.5, 0]} />
+      <gridHelper args={[16, 16, "#D1C5A1", "#E7DBB8"]} position={[0, -1.5, 0]} />
       <OrbitControls
         enablePan={false}
         enableZoom={false}

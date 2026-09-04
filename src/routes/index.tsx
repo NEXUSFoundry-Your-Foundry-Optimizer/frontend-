@@ -162,9 +162,6 @@ function Landing() {
               </div>
             </Reveal>
 
-            <Reveal delay={0.25}>
-              <TwinVisual variant="furnace" className="h-[380px] w-full glow-signal" label="Rendering furnace twin" />
-            </Reveal>
           </div>
 
           <Reveal delay={0.3} className="mt-16">
@@ -242,29 +239,41 @@ function Landing() {
       </section>
 
       {/* FOUNDRY PROCESS */}
-      <section className="border-y border-border bg-surface/40">
+      <section className="border-y border-[#333333] bg-[#111111] text-[#F4E9CD] overflow-hidden">
         <div className="mx-auto max-w-7xl px-5 py-24 lg:px-8">
           <Reveal>
-            <p className="eyebrow">The foundry process</p>
-            <h2 className="mt-5 max-w-2xl text-[clamp(1.8rem,3.4vw,2.8rem)] font-medium leading-tight">
+            <p className="eyebrow text-[#AAAAAA]">The foundry process</p>
+            <h2 className="mt-5 max-w-2xl text-[clamp(1.8rem,3.4vw,2.8rem)] font-medium leading-tight text-white">
               Four stages, one continuous signal path
             </h2>
           </Reveal>
 
           <div className="relative mt-16">
-            <div className="absolute left-0 right-0 top-6 hidden h-px bg-border lg:block" />
+            <div className="absolute left-0 right-0 top-6 hidden h-px bg-[#333333] lg:block overflow-hidden">
+              <motion.div 
+                initial={{ x: "-100%" }}
+                whileInView={{ x: "100%" }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                className="h-full w-1/2 bg-gradient-to-r from-transparent via-[#ff6a00] to-transparent"
+              />
+            </div>
             <div className="grid gap-8 lg:grid-cols-4">
               {stages.map((s, i) => (
-                <Reveal key={s.name} delay={i * 0.1} className="relative">
+                <Reveal key={s.name} delay={i * 0.2} className="relative">
                   <div className="flex items-center gap-3">
-                    <span className="relative z-10 flex size-12 items-center justify-center rounded-full border border-primary/40 bg-background text-primary">
+                    <motion.span 
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      whileInView={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: i * 0.2 + 0.3, type: "spring" }}
+                      className="relative z-10 flex size-12 items-center justify-center rounded-full border border-[#ff6a00]/40 bg-[#111111] text-[#ff6a00]"
+                    >
                       <s.icon className="size-5" />
-                    </span>
-                    <span className="font-mono text-xs text-muted-foreground">0{i + 1}</span>
-                    {i < 3 && <span className="ml-auto hidden h-px flex-1 bg-primary/40 flow-line lg:block" />}
+                    </motion.span>
+                    <span className="font-mono text-xs text-[#888888]">0{i + 1}</span>
+                    {i < 3 && <span className="ml-auto hidden h-px flex-1 bg-[#ff6a00]/40 flow-line lg:block" />}
                   </div>
-                  <h3 className="mt-6 text-lg font-medium">{s.name}</h3>
-                  <p className="mt-2 max-w-xs text-sm text-muted-foreground">{s.copy}</p>
+                  <h3 className="mt-6 text-lg font-medium text-white">{s.name}</h3>
+                  <p className="mt-2 max-w-xs text-sm text-[#AAAAAA]">{s.copy}</p>
                 </Reveal>
               ))}
             </div>
@@ -284,7 +293,6 @@ function Landing() {
               Most systems tell you what already broke. NEXUS-Foundry connects the stages so a furnace signature at
               09:40 becomes a pour decision at 14:48.
             </p>
-            <TwinVisual variant="ladle" className="mt-10 h-[260px] w-full" label="Rendering ladle twin" />
           </Reveal>
 
           <div className="grid gap-4">
