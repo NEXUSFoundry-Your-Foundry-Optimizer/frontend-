@@ -68,15 +68,15 @@
 :root {
   --radius: 0.5rem;
 
-  --background: #F4E9CD;
+  --background: #FAF6EE;
   --foreground: #111111;
 
-  --surface: #F4E9CD;
+  --surface: #FAF6EE;
   --surface-2: #E7DBB8;
 
-  --card: #F4E9CD;
+  --card: #FAF6EE;
   --card-foreground: #111111;
-  --popover: #F4E9CD;
+  --popover: #FAF6EE;
   --popover-foreground: #111111;
 
   --primary: #000000;
@@ -109,7 +109,7 @@
   --chart-4: #AAAAAA;
   --chart-5: #CCCCCC;
 
-  --sidebar: #F4E9CD;
+  --sidebar: #FAF6EE;
   --sidebar-foreground: #111111;
   --sidebar-primary: #000000;
   --sidebar-primary-foreground: #FFFFFF;
