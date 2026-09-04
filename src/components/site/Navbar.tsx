@@ -78,11 +78,9 @@ export function Navbar() {
     >
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-5 lg:px-8">
         <Link to="/" className="flex items-center gap-2.5">
-          <span className="relative flex size-7 items-center justify-center rounded-md bg-primary/15">
-            <span className="size-2.5 rotate-45 rounded-[2px] bg-primary" />
-          </span>
-          <span className="text-[15px] font-semibold tracking-tight">
-            NEXUS<span className="text-primary">-Foundry</span>
+          <img src="/logo.png" alt="Logo" className="size-8 object-contain rounded-sm" />
+          <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-[#ffd700] to-[#ff5500] bg-clip-text text-transparent">
+            NEXUS-Foundry
           </span>
         </Link>
 

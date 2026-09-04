@@ -7,8 +7,8 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <div className="flex flex-col">
-              <span className="font-serif text-3xl font-medium tracking-tight">
-                NEXUS<span className="text-[#ff5500]">-</span><br />
+              <span className="font-serif text-3xl font-medium tracking-tight bg-gradient-to-b from-[#8a3800] to-[#ff6a00] bg-clip-text text-transparent">
+                NEXUS-<br />
                 Foundry
               </span>
             </div>

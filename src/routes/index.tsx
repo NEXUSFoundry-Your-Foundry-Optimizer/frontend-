@@ -19,6 +19,7 @@ import {
 import { TwinVisual } from "@/components/three/TwinVisual";
 import { Reveal, RevealWords } from "@/components/site/Reveal";
 import { TWINS, TWIN_ORDER } from "@/lib/nexus-data";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -178,14 +179,14 @@ function Landing() {
       </section>
 
       {/* MARQUEE */}
-      <section className="overflow-hidden border-y border-border py-6">
+      <section className="overflow-hidden border-y border-[#333333] bg-[#111111] py-6">
         <div className="flex w-max marquee-track">
           {[0, 1].map((rep) => (
             <div key={rep} className="flex items-center">
               {marquee.map((m) => (
-                <span key={`${rep}-${m}`} className="flex items-center gap-8 px-8 text-2xl font-medium text-muted-foreground">
+                <span key={`${rep}-${m}`} className="flex items-center gap-8 px-8 text-2xl font-medium bg-gradient-to-r from-[#8a3800] to-[#ff6a00] bg-clip-text text-transparent">
                   {m}
-                  <span className="size-1.5 rotate-45 bg-primary" />
+                  <span className="size-1.5 rotate-45 bg-gradient-to-r from-[#8a3800] to-[#ff6a00]" />
                 </span>
               ))}
             </div>
@@ -208,29 +209,32 @@ function Landing() {
             const t = TWINS[id];
             const Icon = twinIcon[t.icon as keyof typeof twinIcon];
             return (
-              <Reveal key={id} delay={i * 0.08}>
+              <Reveal key={id} delay={i * 0.08} className={cn("relative h-full", i % 2 !== 0 ? "lg:translate-y-12" : "")}>
                 <Link
                   to="/twins/$twin"
                   params={{ twin: id }}
-                  className="group flex h-full flex-col justify-between rounded-xl border border-border bg-surface p-6 transition-all hover:-translate-y-1 hover:border-primary/40"
+                  className="group relative flex h-[380px] flex-col justify-between rounded-2xl p-[2px] transition-all hover:-translate-y-2"
                 >
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <span className="flex size-10 items-center justify-center rounded-lg bg-primary/12 text-primary">
-                        <Icon className="size-5" />
-                      </span>
-                      {t.comingSoon && (
-                        <span className="rounded-full border border-warning/40 bg-warning/10 px-2.5 py-1 text-[10px] uppercase tracking-wider text-warning">
-                          Coming soon
+                  <div className="absolute inset-0 rounded-2xl border border-border transition-colors duration-300 group-hover:border-transparent group-hover:bg-gradient-to-br group-hover:from-[#8a3800] group-hover:to-[#ff6a00]" />
+                  <div className="relative z-10 flex h-full flex-col justify-between rounded-[14px] bg-gradient-to-br from-[#f8efe0] to-[#e4d5ad] p-7 shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]">
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <span className="flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                          <Icon className="size-6" />
                         </span>
-                      )}
+                        {t.comingSoon && (
+                          <span className="rounded-full border border-warning/40 bg-warning/10 px-2.5 py-1 text-[10px] uppercase tracking-wider text-warning">
+                            Coming soon
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="mt-8 text-2xl font-medium">{t.name}</h3>
+                      <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">{t.blurb}</p>
                     </div>
-                    <h3 className="mt-5 text-lg font-medium">{t.name}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground">{t.blurb}</p>
+                    <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                      Open twin <ArrowUpRight className="size-4" />
+                    </span>
                   </div>
-                  <span className="mt-6 inline-flex items-center gap-1.5 text-sm text-primary opacity-0 transition-opacity group-hover:opacity-100">
-                    Open twin <ArrowUpRight className="size-3.5" />
-                  </span>
                 </Link>
               </Reveal>
             );
@@ -282,29 +286,33 @@ function Landing() {
       </section>
 
       {/* NOVELTY */}
-      <section className="mx-auto max-w-7xl px-5 py-24 lg:px-8">
-        <div className="grid gap-14 lg:grid-cols-[0.9fr_1.1fr]">
+      <section className="relative py-24 lg:py-32">
+        {/* Center Text (Sticky on Desktop) */}
+        <div className="lg:sticky lg:top-[30%] z-0 mx-auto max-w-lg text-center px-5 mb-16 lg:mb-0">
           <Reveal>
-            <p className="eyebrow">Project novelty</p>
-            <h2 className="mt-5 text-[clamp(1.8rem,3.4vw,2.8rem)] font-medium leading-tight">
+            <p className="eyebrow mx-auto text-[#8a3800]">Project novelty</p>
+            <h2 className="mt-5 text-[clamp(2rem,3.5vw,3rem)] font-medium leading-[1.1]">
               What makes it different from a plain monitoring dashboard
             </h2>
-            <p className="mt-5 max-w-sm text-muted-foreground">
+            <p className="mx-auto mt-6 text-[15px] leading-relaxed text-muted-foreground">
               Most systems tell you what already broke. NEXUS-Foundry connects the stages so a furnace signature at
               09:40 becomes a pour decision at 14:48.
             </p>
           </Reveal>
+        </div>
 
-          <div className="grid gap-4">
+        {/* Floating Cards */}
+        <div className="relative z-10 mx-auto max-w-7xl px-5 pb-16 lg:pb-48 lg:pt-[30vh]">
+          <div className="flex flex-col gap-12 lg:gap-64">
             {novelty.map((n, i) => (
-              <Reveal key={n.title} delay={i * 0.1}>
-                <div className="group flex gap-5 rounded-xl border border-border bg-surface p-7 transition-colors hover:border-primary/40">
-                  <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary/12 text-primary">
-                    <n.icon className="size-5" />
+              <Reveal key={n.title} delay={0.1} className={cn("w-full lg:max-w-[340px]", i % 2 === 0 ? "lg:mr-auto" : "lg:ml-auto")}>
+                <div className="group flex flex-col justify-between min-h-[420px] rounded-none border border-[#333333] bg-[#111111] p-10 text-[#F4E9CD] shadow-2xl transition-all duration-700 hover:-translate-y-4 hover:shadow-[0_20px_40px_-15px_rgba(255,106,0,0.2)]">
+                  <span className="flex size-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#8a3800] to-[#ff6a00] text-white">
+                    <n.icon className="size-6" />
                   </span>
-                  <div>
-                    <h3 className="text-lg font-medium">{n.title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground">{n.copy}</p>
+                  <div className="mt-8">
+                    <h3 className="text-2xl font-medium text-white">{n.title}</h3>
+                    <p className="mt-4 text-[15px] leading-relaxed text-[#AAAAAA]">{n.copy}</p>
                   </div>
                 </div>
               </Reveal>
@@ -313,10 +321,10 @@ function Landing() {
         </div>
       </section>
 
-      {/* FUTURE + TOOLS */}
+      {/* FUTURE ENHANCEMENTS */}
       <section className="border-t border-border bg-surface/40">
-        <div className="mx-auto grid max-w-7xl gap-14 px-5 py-24 lg:grid-cols-2 lg:px-8">
-          <Reveal>
+        <div className="mx-auto max-w-7xl px-5 py-24 lg:px-8">
+          <Reveal className="max-w-3xl">
             <p className="eyebrow">Future enhancements</p>
             <h2 className="mt-5 text-[clamp(1.7rem,3vw,2.4rem)] font-medium leading-tight">Where the platform goes next</h2>
             <ul className="mt-8 divide-y divide-border border-y border-border">
@@ -328,20 +336,25 @@ function Landing() {
               ))}
             </ul>
           </Reveal>
+        </div>
+      </section>
 
+      {/* TOOLS USED */}
+      <section className="border-t border-border bg-surface/40">
+        <div className="mx-auto max-w-7xl px-5 py-24 lg:px-8">
           <Reveal delay={0.1}>
             <p className="eyebrow">Tools used</p>
             <h2 className="mt-5 text-[clamp(1.7rem,3vw,2.4rem)] font-medium leading-tight">The stack behind the twins</h2>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {tools.map((t) => (
-                <div key={t.group} className="rounded-xl border border-border bg-surface p-5">
+                <div key={t.group} className="flex flex-col rounded-xl border border-border bg-surface p-6">
                   <div className="flex items-center gap-2 text-primary">
-                    <t.icon className="size-4" />
-                    <span className="text-sm font-medium text-foreground">{t.group}</span>
+                    <t.icon className="size-5" />
+                    <span className="text-base font-medium text-foreground">{t.group}</span>
                   </div>
-                  <div className="mt-3 flex flex-wrap gap-1.5">
+                  <div className="mt-5 flex flex-wrap gap-2">
                     {t.items.map((it) => (
-                      <span key={it} className="rounded border border-border px-2 py-1 text-[11px] text-muted-foreground">
+                      <span key={it} className="rounded-md border border-border px-2.5 py-1 text-xs text-muted-foreground">
                         {it}
                       </span>
                     ))}
