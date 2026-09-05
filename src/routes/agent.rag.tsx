@@ -344,49 +344,45 @@ function RAGPage() {
 
       {/* Main Chat Workspace */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Top Header */}
-        <div className="flex items-center justify-between border-b border-[#DDD2B8] bg-[#EFE4C6]/80 px-6 py-3.5">
+        {/* Docked Context Bar & Sidebar Collapser (Header Removed) */}
+        <div className="flex items-center justify-between border-b border-[#DDD2B8] bg-[#EAE0C1]/80 px-4 py-2.5 text-xs text-[#555555]">
           <div className="flex items-center gap-3">
             {!isSidebarOpen && (
               <button
                 onClick={() => setIsSidebarOpen(true)}
-                className="rounded-lg border border-[#DDD2B8] bg-white/70 p-1.5 text-[#555555] hover:bg-white hover:text-black shadow-xs"
+                className="flex items-center gap-1.5 rounded-lg border border-[#DDD2B8] bg-white/80 px-2.5 py-1 text-xs font-medium text-[#333333] shadow-xs hover:bg-white hover:text-black"
                 title="Open Chat History"
               >
-                <PanelLeftOpen className="size-4" />
+                <PanelLeftOpen className="size-3.5 text-[#FF7A00]" />
+                <span>History</span>
               </button>
             )}
-            <div>
-              <h1 className="text-sm font-semibold tracking-tight text-[#1A1A1A]">{activeConv.title}</h1>
-              <p className="text-xs text-[#666666]">RAG Grounded AI Assistant</p>
+            <div className="flex items-center gap-2">
+              <Database className="size-3.5 text-[#FF7A00]" />
+              <span className="font-semibold text-[#1A1A1A]">Context:</span>
+              <span className="rounded bg-[#DFD3B1] px-2 py-0.5 text-[#222222] font-medium">{activeConv.context.furnace}</span>
+              <span className="rounded bg-[#DFD3B1] px-2 py-0.5 text-[#222222]">Batch: {activeConv.context.batch}</span>
+              <span className="flex items-center gap-1 rounded bg-[#DFD3B1] px-2 py-0.5 text-[#222222]">
+                Status:
+                <span
+                  className={cn(
+                    "size-2 rounded-full",
+                    activeConv.context.status === "alert"
+                      ? "bg-destructive"
+                      : "bg-emerald-500"
+                  )}
+                />
+              </span>
             </div>
           </div>
+
           <button
             onClick={handleCreateNewConversation}
-            className="flex items-center gap-1.5 rounded-lg border border-[#DDD2B8] bg-white/70 px-3 py-1.5 text-xs font-medium text-[#444444] transition hover:bg-white hover:text-black shadow-xs"
+            className="flex items-center gap-1.5 rounded-lg border border-[#DDD2B8] bg-white/80 px-3 py-1 text-xs font-medium text-[#444444] transition hover:bg-white hover:text-black shadow-xs"
           >
             <RefreshCw className="size-3" />
-            New Chat
+            Reset Chat
           </button>
-        </div>
-
-        {/* Context Bar */}
-        <div className="flex items-center gap-3 border-b border-[#DDD2B8] bg-[#EAE0C1]/70 px-6 py-2 text-xs text-[#555555]">
-          <Database className="size-3.5 text-[#FF7A00]" />
-          <span className="font-semibold text-[#1A1A1A]">Active Context:</span>
-          <span className="rounded bg-[#DFD3B1] px-2 py-0.5 text-[#222222]">{activeConv.context.furnace}</span>
-          <span className="rounded bg-[#DFD3B1] px-2 py-0.5 text-[#222222]">Batch: {activeConv.context.batch}</span>
-          <span className="flex items-center gap-1 rounded bg-[#DFD3B1] px-2 py-0.5 text-[#222222]">
-            Status:
-            <span
-              className={cn(
-                "size-2 rounded-full",
-                activeConv.context.status === "alert"
-                  ? "bg-destructive"
-                  : "bg-emerald-500"
-              )}
-            />
-          </span>
         </div>
 
         {/* Chat Message Scroll Area */}
