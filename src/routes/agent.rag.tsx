@@ -67,7 +67,7 @@ const initialConversations: Conversation[] = [
         id: "2",
         role: "assistant",
         content:
-          "Based on the live twin state, Furnace 3 is experiencing a high thermal gradient. According to the maintenance logs, the last refractory lining replacement was 14 weeks ago (exceeding the standard 12-week cycle). The vibration anomaly detected at 14:48:02 correlates with lining wear.",
+          "Based on the live twin state, Furnace 3 is experiencing an abnormal thermal gradient across partition Zone B.\n\nKey Findings:\n• Refractory Replacement Cycle: The last lining overhaul was logged 14 weeks ago, exceeding the manufacturer's recommended 12-week preventative threshold.\n• Telemetry Correlation: The vibration signature spike detected at 14:48:02 correlates directly with localized thermal erosion and micro-fractures in the silica backing.",
         sources: [
           { name: "Furnace 3 Manual p.4-3", relevance: 94 },
           { name: "Incident Report Sept 2025", relevance: 89 },
@@ -265,7 +265,7 @@ function RAGPage() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] w-full overflow-hidden bg-background text-foreground">
+    <div className="flex h-[calc(100vh-4rem)] w-full overflow-hidden bg-[#F4E9CD] text-[#222222]">
       {/* Hidden File Input */}
       <input
         type="file"
@@ -283,16 +283,16 @@ function RAGPage() {
             animate={{ width: 280, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="flex h-full flex-col border-r border-border bg-card/60 backdrop-blur-md"
+            className="flex h-full flex-col border-r border-[#DDD2B8] bg-[#EFE4C6]/90 backdrop-blur-md"
           >
-            <div className="flex items-center justify-between border-b border-border p-4">
-              <div className="flex items-center gap-2 text-sm font-semibold">
-                <History className="size-4 text-primary" />
+            <div className="flex items-center justify-between border-b border-[#DDD2B8] p-4">
+              <div className="flex items-center gap-2 text-sm font-semibold text-[#1A1A1A]">
+                <History className="size-4 text-[#FF7A00]" />
                 <span>Chat History</span>
               </div>
               <button
                 onClick={() => setIsSidebarOpen(false)}
-                className="rounded p-1 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                className="rounded p-1 text-[#666666] hover:bg-[#E5D9B8] hover:text-[#111111]"
                 title="Collapse sidebar"
               >
                 <PanelLeftClose className="size-4" />
@@ -302,7 +302,7 @@ function RAGPage() {
             <div className="p-3">
               <button
                 onClick={handleCreateNewConversation}
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 px-4 text-xs font-semibold text-primary-foreground shadow-xs transition hover:bg-primary/90"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#8a3800] to-[#ff6a00] py-2.5 px-4 text-xs font-semibold text-white shadow-md transition hover:brightness-110"
               >
                 <Plus className="size-4" />
                 New Chat
@@ -317,19 +317,19 @@ function RAGPage() {
                     key={conv.id}
                     onClick={() => setActiveConvId(conv.id)}
                     className={cn(
-                      "group flex cursor-pointer items-center justify-between rounded-lg p-2.5 text-xs transition-all",
+                      "group flex cursor-pointer items-center justify-between rounded-xl p-2.5 text-xs transition-all",
                       isActive
-                        ? "bg-secondary text-foreground font-medium shadow-xs"
-                        : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+                        ? "bg-[#DFD3B1] text-[#111111] font-semibold shadow-xs"
+                        : "text-[#555555] hover:bg-[#E7DCBC] hover:text-[#111111]"
                     )}
                   >
                     <div className="flex items-center gap-2 overflow-hidden pr-1">
-                      <MessageSquare className="size-3.5 shrink-0 text-primary/70" />
+                      <MessageSquare className="size-3.5 shrink-0 text-[#FF7A00]" />
                       <div className="truncate">{conv.title}</div>
                     </div>
                     <button
                       onClick={(e) => handleDeleteConversation(conv.id, e)}
-                      className="hidden rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive group-hover:block"
+                      className="hidden rounded p-1 text-[#777777] hover:bg-destructive/10 hover:text-destructive group-hover:block"
                       title="Delete conversation"
                     >
                       <Trash2 className="size-3.5" />
@@ -345,25 +345,25 @@ function RAGPage() {
       {/* Main Chat Workspace */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Top Header */}
-        <div className="flex items-center justify-between border-b border-border px-6 py-3.5 bg-background">
+        <div className="flex items-center justify-between border-b border-[#DDD2B8] bg-[#EFE4C6]/80 px-6 py-3.5">
           <div className="flex items-center gap-3">
             {!isSidebarOpen && (
               <button
                 onClick={() => setIsSidebarOpen(true)}
-                className="rounded-lg border border-border p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                className="rounded-lg border border-[#DDD2B8] bg-white/70 p-1.5 text-[#555555] hover:bg-white hover:text-black shadow-xs"
                 title="Open Chat History"
               >
                 <PanelLeftOpen className="size-4" />
               </button>
             )}
             <div>
-              <h1 className="text-sm font-semibold tracking-tight">{activeConv.title}</h1>
-              <p className="text-xs text-muted-foreground">RAG Grounded AI Assistant</p>
+              <h1 className="text-sm font-semibold tracking-tight text-[#1A1A1A]">{activeConv.title}</h1>
+              <p className="text-xs text-[#666666]">RAG Grounded AI Assistant</p>
             </div>
           </div>
           <button
             onClick={handleCreateNewConversation}
-            className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+            className="flex items-center gap-1.5 rounded-lg border border-[#DDD2B8] bg-white/70 px-3 py-1.5 text-xs font-medium text-[#444444] transition hover:bg-white hover:text-black shadow-xs"
           >
             <RefreshCw className="size-3" />
             New Chat
@@ -371,12 +371,12 @@ function RAGPage() {
         </div>
 
         {/* Context Bar */}
-        <div className="flex items-center gap-3 border-b border-border/60 bg-secondary/30 px-6 py-2 text-xs text-muted-foreground">
-          <Database className="size-3.5 text-primary" />
-          <span className="font-semibold text-foreground">Active Context:</span>
-          <span className="rounded bg-secondary px-2 py-0.5">{activeConv.context.furnace}</span>
-          <span className="rounded bg-secondary px-2 py-0.5">Batch: {activeConv.context.batch}</span>
-          <span className="flex items-center gap-1 rounded bg-secondary px-2 py-0.5">
+        <div className="flex items-center gap-3 border-b border-[#DDD2B8] bg-[#EAE0C1]/70 px-6 py-2 text-xs text-[#555555]">
+          <Database className="size-3.5 text-[#FF7A00]" />
+          <span className="font-semibold text-[#1A1A1A]">Active Context:</span>
+          <span className="rounded bg-[#DFD3B1] px-2 py-0.5 text-[#222222]">{activeConv.context.furnace}</span>
+          <span className="rounded bg-[#DFD3B1] px-2 py-0.5 text-[#222222]">Batch: {activeConv.context.batch}</span>
+          <span className="flex items-center gap-1 rounded bg-[#DFD3B1] px-2 py-0.5 text-[#222222]">
             Status:
             <span
               className={cn(
@@ -402,17 +402,17 @@ function RAGPage() {
               )}
             >
               {msg.role === "assistant" && (
-                <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#8a3800] to-[#ff6a00] text-white shadow-sm">
                   <Bot className="size-4" />
                 </div>
               )}
 
               <div
                 className={cn(
-                  "max-w-[80%] space-y-2.5 rounded-2xl px-4 py-3 text-sm leading-relaxed",
+                  "max-w-[80%] space-y-3 rounded-2xl p-5 text-sm leading-relaxed shadow-lg",
                   msg.role === "user"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-secondary text-secondary-foreground"
+                    ? "border border-[#ff6a00]/30 bg-gradient-to-b from-[#3a1d0d] to-[#120804] text-white"
+                    : "border border-[#442211] bg-gradient-to-b from-[#2d1508] to-[#0d0704] text-[#F5F5F5]"
                 )}
               >
                 {msg.imageUrl && (
@@ -423,26 +423,30 @@ function RAGPage() {
                       className="max-h-64 w-full object-cover"
                     />
                     {msg.imageName && (
-                      <div className="bg-black/40 px-2 py-1 text-[11px] text-white/80">
+                      <div className="bg-black/60 px-2.5 py-1 text-[11px] text-white/90">
                         {msg.imageName}
                       </div>
                     )}
                   </div>
                 )}
 
-                <div>{msg.content}</div>
+                <div className="whitespace-pre-line text-sm text-[#F0F0F0] leading-relaxed">
+                  {msg.content}
+                </div>
 
                 {msg.sources && msg.sources.length > 0 && (
-                  <div className="mt-3 rounded-lg border border-border/40 bg-background/40 p-2.5 text-xs">
-                    <div className="mb-1.5 flex items-center gap-1 font-semibold text-muted-foreground">
-                      <Paperclip className="size-3" />
-                      Sources
+                  <div className="mt-3 rounded-xl border border-[#442211] bg-black/40 p-3 text-xs">
+                    <div className="mb-2 flex items-center gap-1.5 font-semibold text-[#FFA033]">
+                      <Paperclip className="size-3.5" />
+                      Grounded Citations
                     </div>
-                    <div className="space-y-1">
+                    <div className="space-y-1.5">
                       {msg.sources.map((s, i) => (
-                        <div key={i} className="flex items-center justify-between text-muted-foreground">
+                        <div key={i} className="flex items-center justify-between text-[#CCCCCC]">
                           <span>{s.name}</span>
-                          <span className="font-mono text-[11px]">{s.relevance}%</span>
+                          <span className="rounded bg-[#ff6a00]/15 px-2 py-0.5 font-mono text-[10px] text-[#FFA033]">
+                            {s.relevance}% Match
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -451,7 +455,7 @@ function RAGPage() {
               </div>
 
               {msg.role === "user" && (
-                <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-accent text-muted-foreground">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-black/70 text-white shadow-sm">
                   <User className="size-4" />
                 </div>
               )}
@@ -460,13 +464,13 @@ function RAGPage() {
 
           {isTyping && (
             <div className="flex gap-3">
-              <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#8a3800] to-[#ff6a00] text-white">
                 <Bot className="size-4" />
               </div>
-              <div className="flex items-center gap-1.5 rounded-2xl bg-secondary px-4 py-3">
-                <div className="size-1.5 animate-bounce rounded-full bg-muted-foreground" />
-                <div className="size-1.5 animate-bounce rounded-full bg-muted-foreground [animation-delay:150ms]" />
-                <div className="size-1.5 animate-bounce rounded-full bg-muted-foreground [animation-delay:300ms]" />
+              <div className="flex items-center gap-1.5 rounded-2xl border border-[#442211] bg-gradient-to-b from-[#2d1508] to-[#0d0704] px-5 py-4">
+                <div className="size-1.5 animate-bounce rounded-full bg-[#FFA033]" />
+                <div className="size-1.5 animate-bounce rounded-full bg-[#FFA033] [animation-delay:150ms]" />
+                <div className="size-1.5 animate-bounce rounded-full bg-[#FFA033] [animation-delay:300ms]" />
               </div>
             </div>
           )}
@@ -474,13 +478,13 @@ function RAGPage() {
 
         {/* Image Attachment Preview */}
         {attachedImage && (
-          <div className="flex items-center gap-2 border-t border-border bg-secondary/30 px-6 py-2">
-            <div className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-1.5 text-xs">
-              <ImageIcon className="size-3.5 text-primary" />
-              <span className="max-w-[200px] truncate">{attachedImage.name}</span>
+          <div className="flex items-center gap-2 border-t border-[#DDD2B8] bg-[#EFE4C6] px-6 py-2">
+            <div className="flex items-center gap-2 rounded-xl border border-[#DDD2B8] bg-white px-3 py-1.5 text-xs shadow-xs">
+              <ImageIcon className="size-3.5 text-[#FF7A00]" />
+              <span className="max-w-[200px] truncate text-[#222222] font-medium">{attachedImage.name}</span>
               <button
                 onClick={() => setAttachedImage(null)}
-                className="rounded p-0.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                className="rounded p-0.5 text-[#666666] hover:bg-black/10 hover:text-black"
               >
                 <X className="size-3" />
               </button>
@@ -489,25 +493,25 @@ function RAGPage() {
         )}
 
         {/* Input Area with + Attachment Action */}
-        <div className="border-t border-border p-4 bg-background">
+        <div className="border-t border-[#DDD2B8] bg-[#EFE4C6]/70 p-4">
           <form onSubmit={handleSend} className="relative flex items-center gap-2">
             {/* + Button for Image Attachment */}
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-border bg-secondary/80 text-muted-foreground transition hover:bg-secondary hover:text-foreground active:scale-95"
+              className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-[#DDD2B8] bg-white text-[#444444] transition hover:bg-white hover:text-black shadow-xs active:scale-95"
               title="Attach scan or image"
             >
-              <Plus className="size-4" />
+              <Plus className="size-4 text-[#FF7A00]" />
             </button>
 
             <button
               type="button"
               onClick={handleAttachThermalScanSample}
-              className="hidden sm:inline-flex items-center gap-1 rounded-lg border border-border bg-secondary/40 px-2.5 py-2 text-[11px] text-muted-foreground hover:bg-secondary hover:text-foreground"
+              className="hidden sm:inline-flex items-center gap-1 rounded-xl border border-[#DDD2B8] bg-white px-3 py-2 text-[11px] font-medium text-[#444444] hover:bg-white hover:text-black shadow-xs"
               title="Attach sample IR scan"
             >
-              <ImageIcon className="size-3 text-primary" />
+              <ImageIcon className="size-3 text-[#FF7A00]" />
               Sample Scan
             </button>
 
@@ -517,12 +521,12 @@ function RAGPage() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask a question about plant telemetry or manuals..."
-                className="w-full rounded-xl border border-border bg-secondary/50 py-2.5 pl-4 pr-12 text-sm outline-none transition focus:border-primary"
+                className="w-full rounded-xl border border-[#DDD2B8] bg-white py-2.5 pl-4 pr-12 text-sm text-[#222222] outline-none transition focus:border-[#FF7A00] shadow-xs"
               />
               <button
                 type="submit"
                 disabled={!input.trim() && !attachedImage}
-                className="absolute right-1.5 top-1/2 -translate-y-1/2 flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground transition disabled:opacity-40"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 flex size-8 items-center justify-center rounded-lg bg-gradient-to-r from-[#8a3800] to-[#ff6a00] text-white transition disabled:opacity-40 shadow-xs"
               >
                 <Send className="size-4" />
               </button>
