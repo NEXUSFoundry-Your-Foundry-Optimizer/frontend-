@@ -12,8 +12,10 @@ import {
   PanelLeftOpen,
   MessageSquare,
   Plus,
+  X,
+  Image as ImageIcon,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +27,8 @@ type Message = {
   id: string;
   role: "user" | "assistant";
   content: string;
+  imageUrl?: string;
+  imageName?: string;
   sources?: { name: string; relevance: number }[];
 };
 
@@ -39,6 +43,9 @@ type Conversation = {
   };
   messages: Message[];
 };
+
+// Realistic Thermal Scan Sample SVG Data URL
+const sampleThermalScanUrl = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="360" viewBox="0 0 600 360"><defs><radialGradient id="hotspot" cx="45%" cy="40%" r="55%"><stop offset="0%" stop-color="%23FFFFFF"/><stop offset="20%" stop-color="%23FFF200"/><stop offset="45%" stop-color="%23FF5500"/><stop offset="70%" stop-color="%23990033"/><stop offset="100%" stop-color="%231A0022"/></radialGradient><linearGradient id="irGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23001133"/><stop offset="35%" stop-color="%23440066"/><stop offset="70%" stop-color="%23CC3300"/><stop offset="100%" stop-color="%23FFEE00"/></linearGradient></defs><rect width="600" height="360" fill="url(%23irGrad)"/><circle cx="280" cy="160" r="110" fill="url(%23hotspot)" opacity="0.95"/><path d="M 120 180 Q 280 120 460 210" stroke="%23FFFFFF" stroke-width="1.5" stroke-dasharray="4 4" fill="none" opacity="0.6"/><circle cx="280" cy="160" r="5" fill="%23FFFFFF"/><line x1="260" y1="160" x2="300" y2="160" stroke="%23FFFFFF" stroke-width="1.5"/><line x1="280" y1="140" x2="280" y2="180" stroke="%23FFFFFF" stroke-width="1.5"/><rect x="15" y="15" width="220" height="68" rx="8" fill="rgba(0,0,0,0.75)"/><text x="25" y="36" fill="%23FFFFFF" font-family="monospace" font-size="13" font-weight="bold">IR THERMAL TELEMETRY</text><text x="25" y="54" fill="%23FF7A00" font-family="monospace" font-size="12">Hotspot: 1,614.8°C</text><text x="25" y="70" fill="%23AAAAAA" font-family="monospace" font-size="10">Zone B Lining Degradation</text></svg>`;
 
 const initialConversations: Conversation[] = [
   {
@@ -112,6 +119,8 @@ function RAGPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [attachedImage, setAttachedImage] = useState<{ url: string; name: string } | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     try {
@@ -171,15 +180,39 @@ function RAGPage() {
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setAttachedImage({
+        url: reader.result as string,
+        name: file.name,
+      });
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
+
+  const handleAttachThermalScanSample = () => {
+    setAttachedImage({
+      url: sampleThermalScanUrl,
+      name: "thermal_scan_furnace3_zoneB.svg",
+    });
+  };
+
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() && !attachedImage) return;
 
-    const userText = input.trim();
+    const userText = input.trim() || (attachedImage ? "Inspect attached diagnostic scan." : "");
     const userMsg: Message = {
       id: Date.now().toString(),
       role: "user",
       content: userText,
+      imageUrl: attachedImage?.url,
+      imageName: attachedImage?.name,
     };
 
     setConversations((prev) =>
@@ -200,6 +233,8 @@ function RAGPage() {
     );
 
     setInput("");
+    const hadImage = !!attachedImage;
+    setAttachedImage(null);
     setIsTyping(true);
 
     setTimeout(() => {
@@ -207,8 +242,13 @@ function RAGPage() {
       const assistantMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: `Simulated grounding for query: "${userText}". Plant telemetry parameters within expected variance.`,
-        sources: [{ name: "Foundry Operations Manual v3", relevance: 91 }],
+        content: hadImage
+          ? `Thermal inspection parsed successfully. Identified thermal hotspot at 1,614.8°C along Zone B refractory wall. Corroborating telemetry logs indicate refractory thinning.`
+          : `Simulated grounding for query: "${userText}". Plant telemetry parameters within expected variance.`,
+        sources: [
+          { name: "Foundry Operations Manual v3", relevance: 94 },
+          { name: "Thermal Imaging SOP p.19", relevance: 88 },
+        ],
       };
       setConversations((prev) =>
         prev.map((c) => {
@@ -226,6 +266,15 @@ function RAGPage() {
 
   return (
     <div className="flex h-[calc(100vh-4rem)] w-full overflow-hidden bg-background text-foreground">
+      {/* Hidden File Input */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/*"
+        className="hidden"
+      />
+
       {/* Collapsible Chat History Sidebar */}
       <AnimatePresence initial={false}>
         {isSidebarOpen && (
@@ -366,6 +415,21 @@ function RAGPage() {
                     : "bg-secondary text-secondary-foreground"
                 )}
               >
+                {msg.imageUrl && (
+                  <div className="overflow-hidden rounded-xl border border-white/20">
+                    <img
+                      src={msg.imageUrl}
+                      alt={msg.imageName || "Attached scan"}
+                      className="max-h-64 w-full object-cover"
+                    />
+                    {msg.imageName && (
+                      <div className="bg-black/40 px-2 py-1 text-[11px] text-white/80">
+                        {msg.imageName}
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <div>{msg.content}</div>
 
                 {msg.sources && msg.sources.length > 0 && (
@@ -408,23 +472,61 @@ function RAGPage() {
           )}
         </div>
 
-        {/* Input Area */}
+        {/* Image Attachment Preview */}
+        {attachedImage && (
+          <div className="flex items-center gap-2 border-t border-border bg-secondary/30 px-6 py-2">
+            <div className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-1.5 text-xs">
+              <ImageIcon className="size-3.5 text-primary" />
+              <span className="max-w-[200px] truncate">{attachedImage.name}</span>
+              <button
+                onClick={() => setAttachedImage(null)}
+                className="rounded p-0.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
+              >
+                <X className="size-3" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Input Area with + Attachment Action */}
         <div className="border-t border-border p-4 bg-background">
-          <form onSubmit={handleSend} className="relative flex items-center">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask a question about plant telemetry or manuals..."
-              className="w-full rounded-xl border border-border bg-secondary/50 py-3 pl-4 pr-12 text-sm outline-none transition focus:border-primary"
-            />
+          <form onSubmit={handleSend} className="relative flex items-center gap-2">
+            {/* + Button for Image Attachment */}
             <button
-              type="submit"
-              disabled={!input.trim()}
-              className="absolute right-2 flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground transition disabled:opacity-40"
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-border bg-secondary/80 text-muted-foreground transition hover:bg-secondary hover:text-foreground active:scale-95"
+              title="Attach scan or image"
             >
-              <Send className="size-4" />
+              <Plus className="size-4" />
             </button>
+
+            <button
+              type="button"
+              onClick={handleAttachThermalScanSample}
+              className="hidden sm:inline-flex items-center gap-1 rounded-lg border border-border bg-secondary/40 px-2.5 py-2 text-[11px] text-muted-foreground hover:bg-secondary hover:text-foreground"
+              title="Attach sample IR scan"
+            >
+              <ImageIcon className="size-3 text-primary" />
+              Sample Scan
+            </button>
+
+            <div className="relative flex-1">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask a question about plant telemetry or manuals..."
+                className="w-full rounded-xl border border-border bg-secondary/50 py-2.5 pl-4 pr-12 text-sm outline-none transition focus:border-primary"
+              />
+              <button
+                type="submit"
+                disabled={!input.trim() && !attachedImage}
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground transition disabled:opacity-40"
+              >
+                <Send className="size-4" />
+              </button>
+            </div>
           </form>
         </div>
       </div>
